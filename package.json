@@ -1,0 +1,20 @@
+{
+  "name": "coffeeblog",
+  "version": "0.0.0",
+  "description": "A simplified blogging engine built with coffeescript on top of nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jaitaiwan/CoffeeBlog.git"
+  },
+  "dependencies": {
+    "coffee-script":"latest",
+    "express":"latest"
+  },
+  "author": "Daniel J Holmes",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}
