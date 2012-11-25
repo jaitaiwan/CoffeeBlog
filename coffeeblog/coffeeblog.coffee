@@ -4,17 +4,12 @@
 # @description Main coffeeblog class
 ###
 
-util = require 'util'
 events = require 'events'
-
+IO = require './log'
 
 class CoffeeBlog
-	routes: [
-		method:'get'
-		callback: ->
-			console.log arguments
-		address: '/'
-	]
+	plugins: require './plugins'
+	router: require './router'
 
 	event: new events.EventEmitter
 	
@@ -24,21 +19,13 @@ class CoffeeBlog
 		instance
 
 	init: (app) ->
-		@event.emit 'beforeInit', app
+		@plugins.initialise()
 		@setupRoutes app
 
 
 	setupRoutes: (app) ->
-		@event.emit 'setupRoutes', app
-		app.get route.address, route.callback for route in @routes
-
-	log: (message) ->
-		util.log message
-
-	logError: (message) ->
-		util.error message
-
-require('./plugins').init CoffeeBlog.singleton()
+		@router.initialise(app)
+		@plugins.setupRoutes(@router)
 
 
 module.exports = CoffeeBlog.singleton()

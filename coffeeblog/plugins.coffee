@@ -6,36 +6,48 @@
 
 fs = require 'fs'
 path = require 'path'
+events = require 'events'
+IO = require './log'
+coffeeblog = require './coffeeblog'
 
 class Plugins
+	plugin: new events.EventEmitter
 
+	instance = null
+	@singleton: ->
+		instance ?= new Plugins
+		instance
 
-	init: (@coffeeBlog)->
-		coffeeBlog.event.on 'beforeInit', =>
-			@initialisePlugins()
-		coffeeBlog.event.on 'setupRoutes', => 
-			@setupRoutes()
+	setupRoutes: (Router) ->
+		@plugin.emit 'setupRoutes', Router
+		
 
-	setupRoutes: (app) ->
-		@coffeeBlog.log "Placeholder, setupRoutes called"
-
-	initialisePlugins: ->
-		fs.readdir path.resolve("#{__dirname}/../plugins/"), (err, data) =>
-			if err
-				@coffeeBlog.logError "The plugins folder is missing!"
-				return false
-
-			@plugins = []
-			for pluginDir in data
-				pluginDir = path.resolve "#{__dirname}/../plugins/#{pluginDir}"
+	initialise: ->
+		try
+			data = fs.readdirSync path.resolve("#{__dirname}/../plugins/")
+		catch e
+			IO.logError "The plugins folder is missing!"
+			return false
+		@plugins = []
+		for pluginDir in data
+			pluginDir = path.resolve "#{__dirname}/../plugins/#{pluginDir}"
+			try
+				pluginInfo = require "#{pluginDir}/config"
+				pluginInfo.dir = pluginDir
+				@plugins.push pluginInfo
+				IO.log "Loaded plugin '#{pluginInfo.name}' from '#{path.relative(path.resolve('./'),pluginDir)}'"
 				try
-					pluginInfo = require "#{pluginDir}/config"
-					pluginInfo.dir = pluginDir
-					@plugins.push pluginInfo
-					@coffeeBlog.log "Loaded plugin '#{pluginInfo.name}' from '#{path.relative(path.resolve('./'),pluginDir)}'"
+					IO.log "Initialising plugin with entrypoint at '../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}'"
+					require("../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}").init @plugin
+					IO.log "Initialised plugin '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
 				catch e
-					@coffeeBlog.logError "Failed to load plugin from \"#{pluginDir}\""
+					IO.logError "Failed to initialise '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
+					IO.debug e
+			catch e
+				IO.logError "Failed to load plugin from \"#{pluginDir}\""
+				IO.debug e
+		true
 				
 
 
-module.exports = new Plugins
+module.exports = Plugins.singleton()
