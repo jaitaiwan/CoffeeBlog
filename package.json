@@ -12,7 +12,10 @@
   },
   "dependencies": {
     "coffee-script":"latest",
-    "express":"latest"
+    "express":"latest",
+    "underscore":"latest",
+    "eco":"latest",
+    "stylus":"latest"
   },
   "author": "Daniel J Holmes",
   "license": "BSD",

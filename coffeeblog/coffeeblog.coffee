@@ -10,6 +10,7 @@ IO = require './log'
 class CoffeeBlog
 	plugins: require './plugins'
 	router: require './router'
+	template: new require './templates'
 
 	event: new events.EventEmitter
 	
@@ -24,7 +25,7 @@ class CoffeeBlog
 
 
 	setupRoutes: (app) ->
-		@router.initialise(app)
+		@router.initialise(app, @template)
 		@plugins.setupRoutes(@router)
 
 

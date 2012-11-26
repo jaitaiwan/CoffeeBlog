@@ -1,7 +1,7 @@
 ###
 # @name Plugin.main.coffee
 # @author Description
-# @description Basic plugin class which sets up initial code
+# @description Basic plugin class which sets up initial code for plugins
 ###
 
 IO = require '../coffeeblog/log'

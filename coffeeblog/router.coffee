@@ -6,8 +6,8 @@
 
 Route = require 'express/lib/router/route'
 IO = require './log'
-class Router
 
+class Router
 	routes:
 		get:[]
 		put:[]
@@ -19,53 +19,56 @@ class Router
 		instance ?= new Router
 		instance
 
-	initialise: (app) ->
+	initialise: (app, @template) ->
 		app.get '*', @getRoute
-		#app.put '*', @putRoute
-		#app.post '*', @postRoute
-		#app.delete '*', @delRoute
+		app.put '*', @putRoute
+		app.post '*', @postRoute
+		app.delete '*', @delRoute
 
 	getRoute: (req, res, next) =>
 		for route in @routes.get
 			if route.match req.path
 				req.params = route.params
-				route.callbacks req, res, next
+				route.callbacks req, res, @template
 				return true
 				break
-		res.send 404, "Page not found"
+		@send404 res
 
 
-	putRoute: (req, res, next) ->
+	putRoute: (req, res, next) =>
 		for route in @routes.put
 			if route.match req.path
 				req.params = route.params
-				route.callbacks req, res, next
+				route.callbacks req, res, @template
 				return true
 				break
-		res.send 404
+		@send404 res
 
-	postRoute: (req, res, next) ->
+	postRoute: (req, res, next) =>
 		for route in @routes.post
 			if route.match req.path
 				req.params = route.params
-				route.callbacks req, res, next
+				route.callbacks req, res, @template
 				return true
 				break
-		res.send 404
+		@send404 res
 
-	delRoute: (req, res, next) ->
+	delRoute: (req, res, next) =>
 		for route in @routes.del
 			if route.match req.path
 				req.params = route.params
-				route.callbacks req, res, next
+				route.callbacks req, res, @template
 				return true
 				break
-		res.send 404
+		@send404 res
 
 	addRoute: (method, location, callback) ->
 		for route in @routes[method] then if location is route.path and callback is route.callbacks then return false
 		IO.log "Adding route; Method: #{method}, Location: #{location}"
 		@routes[method].push new Route method, location, callback
 
+	send404: (res)->
+		@template.changeContent "Sorry, I couldn't find that page!"
+		res.send 404, @template.render {title:'Error 404'}
 
 module.exports = Router.singleton()

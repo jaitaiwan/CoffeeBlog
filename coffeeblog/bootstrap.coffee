@@ -21,10 +21,6 @@ app.configure 'production', ->
 	app.use express.bodyParser()
 
 # Initialise the application then add routes
-coffeeblog.event.on 'pluginsReady', ->
-	console.log 'd'
-	server.close()
-	server.listen config?.port
 coffeeblog.init app
 
 # Finally, serve a page
