@@ -67,6 +67,14 @@ class Router
 		IO.log "Adding route; Method: #{method}, Location: #{location}"
 		@routes[method].push new Route method, location, callback
 
+	reset: ->
+		@routes = 
+			get:[]
+			put:[]
+			del:[]
+			post:[]
+
+
 	send404: (res)->
 		@template.changeContent "Sorry, I couldn't find that page!"
 		res.send 404, @template.render {title:'Error 404'}

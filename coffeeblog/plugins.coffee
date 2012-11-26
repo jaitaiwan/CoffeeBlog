@@ -18,11 +18,11 @@ class Plugins
 		instance ?= new Plugins
 		instance
 
-	setupRoutes: (Router) ->
+	setupRoutes: (@Router) ->
 		@plugin.emit 'setupRoutes', Router
 		
 
-	initialise: ->
+	initialise: =>
 		try
 			data = fs.readdirSync path.resolve("#{__dirname}/../plugins/")
 		catch e
@@ -38,7 +38,8 @@ class Plugins
 				IO.log "Loaded plugin '#{pluginInfo.name}' from '#{path.relative(path.resolve('./'),pluginDir)}'"
 				try
 					IO.log "Initialising plugin with entrypoint at '../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}'"
-					require("../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}").init @plugin
+					plug = new new require("../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}")
+					plug.init @plugin
 					IO.log "Initialised plugin '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
 				catch e
 					IO.logError "Failed to initialise '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
@@ -47,6 +48,10 @@ class Plugins
 				IO.logError "Failed to load plugin from \"#{pluginDir}\""
 				IO.debug e
 		true
+
+	reload: =>
+		@Router.reset()
+		@initialise()
 				
 
 

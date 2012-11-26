@@ -14,7 +14,7 @@ class Log
 			util.error "ERROR: #{message}"
 
 		@debug: (element) ->
-			e = if element.message? then element else util.inspect element, true
-			util.print "DEBUG: #{e.stack}\n#{e.message}\n"
+			e = if element.message? then "DEBUG: #{element.stack}\n#{element.message}\n" else util.inspect element, true
+			util.print e
 
 module.exports = Log

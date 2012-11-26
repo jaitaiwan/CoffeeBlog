@@ -7,11 +7,14 @@
 Plugin = require '../../library/Plugin.main'
 
 class Admin extends Plugin
-	routes: []
+	routes: "#{__dirname}/routes.coffee"
+
+	constructor: ->
+		@routes = "#{__dirname}/routes.coffee"
+		super arguments...
 
 	init: (@Plugins) ->
-		@routes = require './routes'
-		super @Plugins
+		super Plugins
 		@setupRoutes require '../../coffeeblog/router'
 
 	setupRoutes: (Router) =>
@@ -19,4 +22,5 @@ class Admin extends Plugin
 
 
 
-module.exports = new Admin
+
+module.exports = Admin
