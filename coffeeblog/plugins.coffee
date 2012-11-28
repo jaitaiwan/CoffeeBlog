@@ -38,7 +38,8 @@ class Plugins
 				IO.log "Loaded plugin '#{pluginInfo.name}' from '#{path.relative(path.resolve('./'),pluginDir)}'"
 				try
 					IO.log "Initialising plugin with entrypoint at '../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}'"
-					plug = new new require("../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}")
+					Plugin = require "../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}"
+					plug = new Plugin
 					plug.init @plugin
 					IO.log "Initialised plugin '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
 				catch e

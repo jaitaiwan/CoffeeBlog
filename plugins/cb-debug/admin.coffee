@@ -17,8 +17,7 @@ class Admin extends Plugin
 		super Plugins
 		@setupRoutes require '../../coffeeblog/router'
 
-	setupRoutes: (Router) =>
-		super Router
+
 
 
 

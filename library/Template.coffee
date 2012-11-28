@@ -3,11 +3,15 @@
 # @author Daniel J Holmes
 # @description Basic template class with reusable functionality for templates
 ###
-
+IO = require '../coffeeblog/log'
 _ = require 'underscore'
-
+Context = require './Template.context'
+Engine = require './Template.engine.eco'
 class Template
-	context: new require './Template.context'
+	context: new Context
+
+	headers:
+		'Content-type':'text/html'
 
 	defaultTemplate: "
 	<!DOCTYPE html>
@@ -25,7 +29,7 @@ class Template
 		</body>
 	</html>
 	"
-	engine: new require './Template.engine.eco'
+	engine: new Engine
 
 	addScript: (script, position = 'head', type = 'text/javascript') =>
 		switch position
@@ -39,10 +43,12 @@ class Template
 	changeContent: (content) =>
 		@context.changeContent content
 
-	newContext: (@context) =>
+	newContext: (context) =>
+		if not context? then @context = new Context
 
 	render: (data = {}, template = @defaultTemplate) =>
-		@engine.compile _.extend(@context,data), template
+
+		@engine.compile (_.extend @context, data), template
 
 
 

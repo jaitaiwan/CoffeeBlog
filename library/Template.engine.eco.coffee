@@ -11,4 +11,4 @@ class Eco extends Engine
 	compiler: engine
 
 
-module.exports = new Eco
+module.exports = Eco

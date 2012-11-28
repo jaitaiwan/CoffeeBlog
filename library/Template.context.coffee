@@ -3,6 +3,7 @@
 # @author Daniel J Holmes
 # @description Provides helper functions for template contexts
 ###
+IO = require '../coffeeblog/log'
 
 class Context
 	scripts:
@@ -10,6 +11,7 @@ class Context
 		foot: []
 
 	styles:[]
+
 
 	title: "Default Template"
 
@@ -36,7 +38,7 @@ class Context
 
 	head_styles: ->
 		styles = ""
-		styles += "<link type='#{style.type}' rel='#{style.rel}' href='#{style.source}'></script>" for style in @styles
+		styles += "<link type='#{style.type}' rel='#{style.rel}' href='#{style.source}'></script>" for style in styles
 		styles
 
 	addHeadScript: (script, type) ->
@@ -44,7 +46,7 @@ class Context
 			source: script
 			type: type
 
-	addFootScript: (script, type) ->
+	moduleaddFootScript: (script, type) ->
 		@scripts.foot.push
 			source: script
 			type: type
@@ -57,4 +59,4 @@ class Context
 
 	changeContent: (@content) ->
 
-module.exports = new Context
+module.exports = Context

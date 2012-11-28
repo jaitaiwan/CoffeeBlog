@@ -17,11 +17,9 @@ class Main
 		if typeof @routes is 'string'
 			file = fs.readFileSync @routes
 			@routes = eval (coffee.compile file.toString(), {bare:true})
-		Plugins.on 'setupRoutes', (Router) =>
-			@setupRoutes Router
 
 
 	setupRoutes: (@Router) =>
-		Router.addRoute route.method, route.address, route.callback for route in @routes
+		Router.addRoute route.method, route.address, route.callback for route in @routes if @routes?.length > 0
 
 module.exports = Main

@@ -18,7 +18,7 @@ try
 		try
 			templateConfig = require path.resolve "#{__dirname}/../templates/#{config.template}/config"
 			try
-				expo = new require path.resolve "#{__dirname}/../templates/#{config.template}/#{templateConfig.entrypoint}"
+				expo = require path.resolve "#{__dirname}/../templates/#{config.template}/#{templateConfig.entrypoint}"
 			catch e
 				IO.logError "Failed to load template"
 				IO.debug e
@@ -31,4 +31,4 @@ catch e
 	IO.logError "The templates folder is missing!"
 
 
-module.exports = new expo
+module.exports = expo

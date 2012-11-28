@@ -6,7 +6,7 @@
 
 Route = require 'express/lib/router/route'
 IO = require './log'
-
+Context = require '../library/Template.context'
 class Router
 	routes:
 		get:[]
@@ -26,12 +26,12 @@ class Router
 		app.delete '*', @delRoute
 
 	getRoute: (req, res, next) =>
+		IO.log "Client requested #{req.path}"
 		for route in @routes.get
 			if route.match req.path
+				IO.log "Match Found #{route.path}"
 				req.params = route.params
-				route.callbacks req, res, @template
-				return true
-				break
+				return route.callbacks req, res, @template
 		@send404 res
 
 
@@ -63,7 +63,7 @@ class Router
 		@send404 res
 
 	addRoute: (method, location, callback) ->
-		for route in @routes[method] then if location is route.path and callback is route.callbacks then return false
+		if @routes[method]?.length > 0 then for route in @routes[method] then if location is route.path and callback is route.callbacks then return false
 		IO.log "Adding route; Method: #{method}, Location: #{location}"
 		@routes[method].push new Route method, location, callback
 
@@ -75,8 +75,9 @@ class Router
 			post:[]
 
 
-	send404: (res)->
+	send404: (res) =>
 		@template.changeContent "Sorry, I couldn't find that page!"
 		res.send 404, @template.render {title:'Error 404'}
+		@template.newContext()
 
 module.exports = Router.singleton()

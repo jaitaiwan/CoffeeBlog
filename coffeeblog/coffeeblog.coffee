@@ -6,11 +6,11 @@
 
 events = require 'events'
 IO = require './log'
-
+Template = require './templates'
 class CoffeeBlog
 	plugins: require './plugins'
 	router: require './router'
-	template: new require './templates'
+	template: new Template
 
 	event: new events.EventEmitter
 	
