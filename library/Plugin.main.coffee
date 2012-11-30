@@ -13,7 +13,7 @@ class Main
 	routes: []
 	hasRun: false
 
-	init:(@Plugins) =>
+	init: =>
 		if typeof @routes is 'string'
 			file = fs.readFileSync @routes
 			@routes = eval (coffee.compile file.toString(), {bare:true})

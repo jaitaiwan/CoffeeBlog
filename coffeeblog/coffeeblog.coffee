@@ -29,11 +29,11 @@ class CoffeeBlog
 
 	init: (app) ->
 		app.use express.static path.resolve "#{__dirname}/../templates/#{config.template}/public"
+		@plugins.initialise app
 		@setupRoutes app
-		@plugins.initialise()
 
 
 	setupRoutes: (app) ->
-		@router.initialise(app, @template)
+		@router.initialise app, @template
 
 module.exports = CoffeeBlog

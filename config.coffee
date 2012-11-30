@@ -12,4 +12,4 @@ module.exports =
 		engine: 'Mongo'
 		user: 'coffeeblog'
 		password: '1amaw3s0me'
-		collections: ['users','posts']
+		collections: ['users','posts','pages']

@@ -18,7 +18,7 @@ class Plugins
 		instance
 		
 
-	initialise: =>
+	initialise: (app) =>
 		try
 			data = fs.readdirSync path.resolve("#{__dirname}/../plugins/")
 		catch e
@@ -36,7 +36,7 @@ class Plugins
 					IO.log "Initialising plugin with entrypoint at '../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}'"
 					Plugin = require "../#{path.relative(path.resolve('./'),pluginDir)}/#{pluginInfo.entrypoint}"
 					plug = new Plugin
-					plug.init @plugin
+					plug.init app
 					IO.log "Initialised plugin '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
 				catch e
 					IO.logError "Failed to initialise '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"

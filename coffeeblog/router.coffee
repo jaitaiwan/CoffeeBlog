@@ -7,6 +7,7 @@
 Route = require 'express/lib/router/route'
 IO = require './log'
 Context = require '../library/Template.context'
+express = require 'express'
 class Router
 	routes:
 		get:[]
@@ -14,12 +15,15 @@ class Router
 		post:[]
 		del:[]
 
+	staticRoutes: []
+
 	instance = null
 	@singleton: ->
 		instance ?= new Router
 		instance
 
 	initialise: (@app, @template) ->
+		app.use route.location, express.static route.path for route in @staticRoutes
 		app.get '*', @getRoute
 		app.put '*', @putRoute
 		app.post '*', @postRoute
@@ -73,7 +77,12 @@ class Router
 			put:[]
 			del:[]
 			post:[]
+		@staticRoutes = []
 
+	addStaticRoute: (identifier, physicalLocation) =>
+		@staticRoutes.push 
+			location:identifier
+			path:physicalLocation
 
 	send404: (res) =>
 		@template.changeContent "Sorry, I couldn't find that page!"
