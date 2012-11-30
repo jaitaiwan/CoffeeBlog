@@ -7,5 +7,6 @@
 Template = require '../../library/Template'
 
 class CoffeeTemplate extends Template
+	@defaultTemplate: require './views/main'
 
 module.exports = CoffeeTemplate

@@ -10,7 +10,7 @@ class controllerMVC
 	constructor: (view, @template) ->
 		if typeof view is 'string'
 			try
-				template.changeContent require "#{view}"
+				template.changeContent require "./views/#{view}"
 			catch e
 				IO.log
 

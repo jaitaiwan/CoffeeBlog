@@ -7,10 +7,18 @@
 events = require 'events'
 IO = require './log'
 Template = require './templates'
+Plugins = require './plugins'
+Router = require './router'
+Database = require './database'
+config = require '../config'
+express = require 'express'
+path = require 'path'
+
 class CoffeeBlog
-	plugins: require './plugins'
-	router: require './router'
+	router: Router.singleton()
+	plugins: Plugins.singleton()
 	template: new Template
+	database: new Database config.db.db, config.db.user, config.db.password, config.db.collections
 
 	event: new events.EventEmitter
 	
@@ -20,13 +28,12 @@ class CoffeeBlog
 		instance
 
 	init: (app) ->
-		@plugins.initialise()
+		app.use express.static path.resolve "#{__dirname}/../templates/#{config.template}/public"
 		@setupRoutes app
+		@plugins.initialise()
 
 
 	setupRoutes: (app) ->
 		@router.initialise(app, @template)
-		@plugins.setupRoutes(@router)
 
-
-module.exports = CoffeeBlog.singleton()
+module.exports = CoffeeBlog

@@ -4,7 +4,8 @@
 # @description Provides helper functions for template contexts
 ###
 IO = require '../coffeeblog/log'
-
+config = require '../config'
+path = require 'path'
 class Context
 	scripts:
 		head: []
@@ -19,8 +20,13 @@ class Context
 	footer: ""
 	content: ""
 
-	the_header: ->
-		@header
+	the_header: (context) ->
+		try
+			view = require path.resolve "#{__dirname}/../templates/#{config.template}/views/header"
+			view context
+		catch e
+			IO.debug e
+			@header
 	the_footer: ->
 		@footer + @foot_scripts()
 	the_content: ->
@@ -46,7 +52,7 @@ class Context
 			source: script
 			type: type
 
-	moduleaddFootScript: (script, type) ->
+	addFootScript: (script, type) ->
 		@scripts.foot.push
 			source: script
 			type: type

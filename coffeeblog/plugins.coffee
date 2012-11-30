@@ -9,7 +9,6 @@ path = require 'path'
 events = require 'events'
 IO = require './log'
 coffeeblog = require './coffeeblog'
-
 class Plugins
 	plugin: new events.EventEmitter
 
@@ -17,9 +16,6 @@ class Plugins
 	@singleton: ->
 		instance ?= new Plugins
 		instance
-
-	setupRoutes: (@Router) ->
-		@plugin.emit 'setupRoutes', Router
 		
 
 	initialise: =>
@@ -56,4 +52,4 @@ class Plugins
 				
 
 
-module.exports = Plugins.singleton()
+module.exports = Plugins

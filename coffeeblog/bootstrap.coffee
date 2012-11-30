@@ -8,7 +8,7 @@
 config = require '../config'
 
 # Load coffeeblog into memory
-coffeeblog = require './coffeeblog'
+coffeeblog = require('./coffeeblog').singleton()
 
 # Setup our express server ready for our applcation
 express = require 'express'

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= @title %></title>
+		<%- @head_scripts() %>
+		<%- @head_styles() %>
+	</head>
+	<body>
+		<%- @the_header(@) %>
+		<%- @the_content() %>
+		<%- @the_footer(@) %>
+	</body>
+</html>

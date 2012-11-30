@@ -9,6 +9,7 @@ IO = require '../../coffeeblog/log'
 path = require 'path'
 fs = require 'fs'
 mvcHelper = require '../../helpers/Helper.mvc'
+express = require 'express'
 class cb_modules extends Plugin
 	routes: []
 
@@ -49,8 +50,15 @@ class cb_modules extends Plugin
 			catch e
 				IO.logError "Failed to load module from \"#{moduleDir}\""
 				IO.debug e
-		@setupRoutes require '../../coffeeblog/router'
+		Router = require '../../coffeeblog/router'
+		@setupStaticRoutes Router
+		@setupRoutes Router.singleton()
 		true
+
+	setupStaticRoutes:(Router) =>
+		for module in @modules
+			##TODO: Make this part work... lol
+			Router.singleton().app.use express.static "/#{module.name}", path.resolve "#{__dirname}/../../modules/#{module.name}/public"
 
 
 module.exports = cb_modules

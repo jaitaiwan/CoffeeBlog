@@ -15,7 +15,8 @@
     "express":"latest",
     "underscore":"latest",
     "eco":"latest",
-    "stylus":"latest"
+    "stylus":"latest",
+    "mongojs":"latest"
   },
   "author": "Daniel J Holmes",
   "license": "BSD",

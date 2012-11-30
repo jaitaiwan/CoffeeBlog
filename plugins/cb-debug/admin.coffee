@@ -15,7 +15,8 @@ class Admin extends Plugin
 
 	init: (@Plugins) ->
 		super Plugins
-		@setupRoutes require '../../coffeeblog/router'
+		Router = require '../../coffeeblog/router'
+		@setupRoutes Router.singleton()
 
 
 

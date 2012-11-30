@@ -19,7 +19,7 @@ class Router
 		instance ?= new Router
 		instance
 
-	initialise: (app, @template) ->
+	initialise: (@app, @template) ->
 		app.get '*', @getRoute
 		app.put '*', @putRoute
 		app.post '*', @postRoute
@@ -80,4 +80,4 @@ class Router
 		res.send 404, @template.render {title:'Error 404'}
 		@template.newContext()
 
-module.exports = Router.singleton()
+module.exports = Router

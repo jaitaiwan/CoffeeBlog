@@ -46,9 +46,16 @@ class Template
 	newContext: (context) =>
 		if not context? then @context = new Context
 
-	render: (data = {}, template = @defaultTemplate) =>
-
+	render: (data = {}, template) =>
+		template ?= @defaultTemplate
+		if typeof template is 'function'
+			return @renderView template, data
 		@engine.compile (_.extend @context, data), template
+
+	renderView: (template, data = {}) ->
+		if typeof template isnt 'function' or typeof data isnt 'object' then return false
+		_.extend @context, data
+		template data
 
 
 
