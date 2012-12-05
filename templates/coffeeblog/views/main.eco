@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title><%= @title %></title>
-		<%- @head_scripts() %>
-		<%- @head_styles() %>
-	</head>
-	<body>
-		<%- @the_header(@) %>
-		<%- @the_content() %>
-		<%- @the_footer(@) %>
-	</body>
-</html>
+<%- @the_header(@) %>
+<div class="content">
+<%- @the_content() %>
+</div>
+<%- @the_footer(@) %>

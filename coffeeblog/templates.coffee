@@ -20,13 +20,13 @@ try
 			try
 				expo = require path.resolve "#{__dirname}/../templates/#{config.template}/#{templateConfig.entrypoint}"
 			catch e
-				IO.logError "Failed to load template"
+				IO.error "Failed to load template"
 				IO.debug e
 			
 		catch e
-			IO.logError "Template has no config!"
+			IO.error "Template has no config!"
 	catch e
-		IO.logError "The template: #{config.template} cannot be found."
+		IO.error "The template: #{config.template} cannot be found."
 catch e
 	IO.logError "The templates folder is missing!"
 

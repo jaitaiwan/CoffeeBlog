@@ -5,10 +5,11 @@
 ###
 
 Template = require '../../library/Template'
-config = require '../../config'
 
 class CoffeeTemplate extends Template
-	@title: config.siteTitle
-	@defaultTemplate: require './views/main'
+	defaultTemplate: require './views/main'
+
+	init: ->
+		require('./functions').call @
 
 module.exports = CoffeeTemplate

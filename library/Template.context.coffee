@@ -7,14 +7,7 @@ IO = require '../coffeeblog/log'
 config = require '../config'
 path = require 'path'
 class Context
-	scripts:
-		head: []
-		foot: []
-
-	styles:[]
-
-
-	title: "Default Template"
+	title: config.siteTitle
 
 	header: ""
 	footer: ""
@@ -27,8 +20,13 @@ class Context
 		catch e
 			IO.debug e
 			@header
-	the_footer: ->
-		@footer + @foot_scripts()
+	the_footer: (context) ->
+		try
+			view = require path.resolve "#{__dirname}/../templates/#{config.template}/views/footer"
+			view context
+		catch e
+			IO.debug e
+			@footer + @foot_scripts()
 	the_content: ->
 		@content
 
@@ -37,32 +35,19 @@ class Context
 		scripts += "<script type='#{script.type}' src='#{script.source}'></script>" for script in @scripts.head
 		scripts
 
-	foot_scripts: ->
+	foot_scripts: -> 
 		scripts = ""
 		scripts += "<script type='#{script.type}' src='#{script.source}'></script>" for script in @scripts.foot
 		scripts
 
 	head_styles: ->
 		styles = ""
-		styles += "<link type='#{style.type}' rel='#{style.rel}' href='#{style.source}'></script>" for style in styles
+		styles += "<link type='#{style.type}' rel='#{style.rel}' href='#{style.source}'></script>" for style in @styles
 		styles
 
-	addHeadScript: (script, type) ->
-		@scripts.head.push
-			source: script
-			type: type
-
-	addFootScript: (script, type) ->
-		@scripts.foot.push
-			source: script
-			type: type
-
-	addStyleSheet: (href, rel, type) ->
-		@styles.push
-			source: href
-			rel: rel
-			type: type
-
 	changeContent: (@content) ->
+
+	cb_menu: (menuName) =>
+		@menus[menuName] if @menus?[menuName]?
 
 module.exports = Context

@@ -30,6 +30,7 @@ class CoffeeBlog
 	init: (app) ->
 		app.use express.static path.resolve "#{__dirname}/../templates/#{config.template}/public"
 		@database.start()
+		@template.init()
 		@plugins.initialise app
 		@setupRoutes app
 
