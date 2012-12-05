@@ -24,11 +24,12 @@ class cb_modules extends Plugin
 		try
 			data = fs.readdirSync path.resolve("#{__dirname}/../../modules/")
 		catch e
-			IO.logError "The modules folder is missing!"
+			IO.error "The modules folder is missing!"
 			throw "Missing the modules folder"
 			return false
 		@modules = []
 		for moduleDir in data
+			if moduleDir[0...1] is "." then continue
 			moduleDir = path.resolve "#{__dirname}/../../modules/#{moduleDir}"
 			try
 				moduleInfo = require "#{moduleDir}/config"
@@ -41,14 +42,14 @@ class cb_modules extends Plugin
 						address: "/#{moduleInfo.namespace}/:controller?/:action?/:view?"
 						method: 'get'
 						callback: (req, res, template) ->
-							mvcHelper.loadModule moduleInfo, req, template, res
+							return mvcHelper.loadModule moduleInfo, req, template, res
 							#IO.log "#{moduleInfo.namespace} Not yet Implemented"
 					IO.log "Initialised module '#{moduleInfo.name}' with namespace '#{moduleInfo.namespace}'"
 				catch e
-					IO.logError "Failed to initialise '#{moduleInfo.name}' with namespace '#{moduleInfo.namespace}'"
+					IO.error "Failed to initialise '#{moduleInfo.name}' with namespace '#{moduleInfo.namespace}'"
 					IO.debug e
 			catch e
-				IO.logError "Failed to load module from \"#{moduleDir}\""
+				IO.warn "Failed to load module from \"#{moduleDir}\""
 				IO.debug e
 		Router = require '../../coffeeblog/router'
 		@setupStaticRoutes Router.singleton()

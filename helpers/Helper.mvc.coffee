@@ -16,5 +16,6 @@ class MVC
 		response.set template.headers
 		response.send template.render()
 		template.newContext()
+		return true
 
 module.exports = new MVC

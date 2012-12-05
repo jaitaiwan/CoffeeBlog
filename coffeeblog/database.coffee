@@ -11,5 +11,5 @@ try
 	Database = require "../library/Database.#{config.db.engine.toLowerCase()}"
 	module.exports = Database
 catch e
-	IO.logError "Failed to load the database with engine: #{config.db.engine}"
+	IO.error "Failed to load the database with engine: #{config.db.engine}"
 	IO.debug e

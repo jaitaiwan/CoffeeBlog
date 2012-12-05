@@ -29,42 +29,68 @@ class Router
 		app.post '*', @postRoute
 		app.delete '*', @delRoute
 
-	getRoute: (req, res, next) =>
-		IO.log "Client requested #{req.path}"
+	getRoute: (req, res) =>
+		IO.log "Client requested #{req.path} with method 'get'"
+		middleware = []
 		for route in @routes.get
 			if route.match req.path
-				IO.log "Match Found #{route.path}"
 				req.params = route.params
-				return route.callbacks req, res, @template
-		@send404 res
+				middleware.push route.callbacks
+		i = 0
+		next = =>
+			if middleware.length > i
+				middleware[i] req, res, @template, next
+				i++
+			else @send404 res
+		next()
+		if middleware.length is 0
+			@send404 res
 
 
 	putRoute: (req, res, next) =>
 		for route in @routes.put
 			if route.match req.path
 				req.params = route.params
-				route.callbacks req, res, @template
-				return true
-				break
-		@send404 res
+				middleware.push route.callbacks
+		i = 0
+		next = =>
+			if middleware.length > i
+				middleware[i] req, res, @template, next
+				i++
+			else @send404 res
+		next()
+		if middleware.length is 0
+			@send404 res
 
 	postRoute: (req, res, next) =>
 		for route in @routes.post
 			if route.match req.path
 				req.params = route.params
-				route.callbacks req, res, @template
-				return true
-				break
-		@send404 res
+				middleware.push route.callbacks
+		i = 0
+		next = =>
+			if middleware.length > i
+				middleware[i] req, res, @template, next
+				i++
+			else @send404 res
+		next()
+		if middleware.length is 0
+			@send404 res
 
 	delRoute: (req, res, next) =>
 		for route in @routes.del
 			if route.match req.path
 				req.params = route.params
-				route.callbacks req, res, @template
-				return true
-				break
-		@send404 res
+				middleware.push route.callbacks
+		i = 0
+		next = =>
+			if middleware.length > i
+				middleware[i] req, res, @template, next
+				i++
+			else @send404 res
+		next()
+		if middleware.length is 0
+			@send404 res
 
 	addRoute: (method, location, callback) ->
 		if @routes[method]?.length > 0 then for route in @routes[method] then if location is route.path and callback is route.callbacks then return false

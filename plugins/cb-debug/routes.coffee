@@ -13,7 +13,7 @@
 			address: "/cb-debug/plugins/reinit"
 			method: 'get'
 			callback: (req, res, template) ->
-				Plugins.reload()
+				Plugins.singleton().reload()
 				res.send "Success!"
 		}
 	]

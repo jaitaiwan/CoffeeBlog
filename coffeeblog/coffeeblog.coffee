@@ -18,7 +18,7 @@ class CoffeeBlog
 	router: Router.singleton()
 	plugins: Plugins.singleton()
 	template: new Template
-	database: new Database config.db.db, config.db.user, config.db.password, config.db.collections
+	database: new Database config.db.db, config.db.host, config.db.user, config.db.password, config.db.collections
 
 	event: new events.EventEmitter
 	
@@ -29,6 +29,7 @@ class CoffeeBlog
 
 	init: (app) ->
 		app.use express.static path.resolve "#{__dirname}/../templates/#{config.template}/public"
+		@database.start()
 		@plugins.initialise app
 		@setupRoutes app
 

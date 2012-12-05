@@ -17,6 +17,8 @@ class Main
 		if typeof @routes is 'string'
 			file = fs.readFileSync @routes
 			@routes = eval (coffee.compile file.toString(), {bare:true})
+		Router = require '../coffeeblog/router'
+		@setupRoutes Router.singleton()
 
 
 	setupRoutes: (@Router) =>

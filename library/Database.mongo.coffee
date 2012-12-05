@@ -6,34 +6,26 @@
 
 MongoDB = require 'mongojs'
 Database = require './Database'
+config = require '../config'
 
 class Database.Mongo extends Database
 	engine: MongoDB
-
-	contructor: (db, user, password, collections) ->
-		@db = db if db? and typeof db is 'string'
-		@user = user if user? and typeof user is 'string'
-		@password = password if password? and typeof password is 'string'
-		@collections = collections if collections? and typeof collections is 'array'
-		super
+	host: config.db.host
+	db: config.db.db
+	user: config.db.user
+	password: config.db.password
+	auth: false
 
 	get: (findObj, orderBy = {}, fn, collection) ->
-		if typeof arguments[arguments.length -2] isnt 'function' then return false
-		col = if collection? then collection else @defaultCollection
-		@handle[col].find 
+		if typeof arguments[arguments.length - 2] isnt 'function' then return false
+		col = @handle.collection collection
+		col.find 
 			$query: findObj
 			$orderby: orderBy
 		, fn
 
 	set: (findObj, setObj, fn, setAll = false, collection) ->
 		if typeof arguments[arguments.length -3] isnt 'function' then return false
-		col = if collection? then collection else @defaultCollection
-		@handle[col].update findObj, {$set:setObj}, {multi:setAll}, fn
-
-	addCollection: (collection) ->
-		for item in collection
-			if item is collection then return false
-		@collections.push collection
-		db.collection @collections
+		@handle[collection].update findObj, {$set:setObj}, {multi:setAll}, fn
 
 module.exports = Database.Mongo

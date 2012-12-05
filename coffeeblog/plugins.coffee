@@ -22,10 +22,11 @@ class Plugins
 		try
 			data = fs.readdirSync path.resolve("#{__dirname}/../plugins/")
 		catch e
-			IO.logError "The plugins folder is missing!"
+			IO.error "The plugins folder is missing!"
 			return false
 		@plugins = []
 		for pluginDir in data
+			if pluginDir[0...1] is "." then continue
 			pluginDir = path.resolve "#{__dirname}/../plugins/#{pluginDir}"
 			try
 				pluginInfo = require "#{pluginDir}/config"
@@ -39,15 +40,18 @@ class Plugins
 					plug.init app
 					IO.log "Initialised plugin '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
 				catch e
-					IO.logError "Failed to initialise '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
+					IO.error "Failed to initialise '#{pluginInfo.name}' at entrypoint '#{pluginInfo.entrypoint}'"
 					IO.debug e
 			catch e
-				IO.logError "Failed to load plugin from \"#{pluginDir}\""
+				IO.warn "Failed to load plugin from \"#{pluginDir}\""
 				IO.debug e
 		true
 
 	reload: =>
-		@Router.reset()
+		Router = require './router'
+		IO.custom ""
+		IO.custom "\x1B[1m\x1b[7m\n ---------- Re-Initialising Plugins ---------- \n\x1B[0m\n"
+		Router.singleton().reset()
 		@initialise()
 				
 
