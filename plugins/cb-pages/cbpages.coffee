@@ -16,7 +16,10 @@ class Pages extends Plugin
 			address: '/:page'
 			method: 'get'
 			callback: (request, response, template, next) =>
-				Database.get {postType:"page"}, {}, (err, datas) ->
+				Database.get {postType:"page",name:request.params.page}, {}, (err, datas) ->
+					if err then IO.log "Failed to load page from memory"
+					if datas.length is 0
+						next()
 					for data in datas
 						if data.name is request.params.page
 							try
@@ -28,8 +31,8 @@ class Pages extends Plugin
 								template.changeContent data.contents
 							response.send template.render()
 							template.newContext()
-							true
-						else next()
+							return true
+						else return next()
 				, "posts"
 		}
 	]

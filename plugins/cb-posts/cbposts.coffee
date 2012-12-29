@@ -6,6 +6,6 @@
 
 Plugin = require '../../library/Plugin.main'
 
-class Pages extends Plugin
+class Posts extends Plugin
 
-module.exports = Pages
+module.exports = Posts

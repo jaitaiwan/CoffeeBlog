@@ -10,11 +10,21 @@
 
 	return [
 		{
-			address: "/cb-debug/plugins/reinit"
+			address: "/cb-debug/reinit/plugins"
 			method: 'get'
 			callback: (req, res, template) ->
 				Plugins.singleton().reload()
 				res.send "Success!"
+				IO.log "Request Served"
+		}
+		{
+			address:"/cb-debug/reinit/template"
+			method: 'get'
+			callback: (req, res, template) ->
+				coffeeblog = require '../coffeeblog/coffeeblog'
+				Template = require '../coffeeblog/template'
+				coffeeblog.singleton().template = new Template
+				IO.log "Request Served"
 		}
 	]
 )()

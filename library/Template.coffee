@@ -11,9 +11,6 @@ Engine = require './Template.engine.eco'
 class Template
 	context: new Context
 
-	headers:
-		'Content-type':'text/html'
-
 	defaultTemplate: "
 	<!DOCTYPE html>
 	<html>
@@ -49,6 +46,7 @@ class Template
 		@addStyleSheet location, rel, type
 
 	changeContent: (content) =>
+		if typeof content is 'function' then content = content()
 		@context.changeContent content
 
 	addHeadScript: (script, type) ->
@@ -84,7 +82,7 @@ class Template
 	registerMenu: (menuName) =>
 		coffeeblog = require '../coffeeblog/coffeeblog'
 		Database = coffeeblog.singleton().database
-		Database.get {}, {}, (err, data) =>
+		Database.get {menu:menuName}, {menuorder:2}, (err, data) =>
 			if err then return false
 			@staticData.menus[menuName] = data
 		, "menus"

@@ -8,6 +8,8 @@ config = require '../config'
 path = require 'path'
 class Context
 	title: config.siteTitle
+	headers:
+		'Content-type':'text/html'
 
 	header: ""
 	footer: ""
@@ -47,7 +49,7 @@ class Context
 
 	changeContent: (@content) ->
 
-	cb_menu: (menuName) =>
+	cb_menu: (menuName) ->
 		@menus[menuName] if @menus?[menuName]?
 
 module.exports = Context

@@ -4,31 +4,6 @@
 # @description Loads template based on config
 ###
 
-IO = require './log'
 config = require "../config"
-fs = require 'fs'
-path = require 'path'
-
-expo = null
-
-try
-	fs.readdirSync path.resolve "#{__dirname}/../templates/"
-	try
-		fs.readdirSync path.resolve "#{__dirname}/../templates/#{config.template}"
-		try
-			templateConfig = require path.resolve "#{__dirname}/../templates/#{config.template}/config"
-			try
-				expo = require path.resolve "#{__dirname}/../templates/#{config.template}/#{templateConfig.entrypoint}"
-			catch e
-				IO.error "Failed to load template"
-				IO.debug e
-			
-		catch e
-			IO.error "Template has no config!"
-	catch e
-		IO.error "The template: #{config.template} cannot be found."
-catch e
-	IO.logError "The templates folder is missing!"
-
-
-module.exports = expo
+TemplateHelper = require '../helpers/Helper.template'
+module.exports = TemplateHelper.loadTemplate config.template

@@ -36,58 +36,72 @@ class Router
 			if route.match req.path
 				req.params = route.params
 				middleware.push route.callbacks
-		i = 0
+		i = -1
 		next = =>
-			if middleware.length > i
+			i++
+			if middleware[i]?
 				middleware[i] req, res, @template, next
-				i++
-			else @send404 res
+			else
+				@send404 res
+				false
 		next()
 		if middleware.length is 0
 			@send404 res
 
 
 	putRoute: (req, res, next) =>
+		IO.log "Client requested #{req.path} with method 'put'"
+		middleware = []
 		for route in @routes.put
 			if route.match req.path
 				req.params = route.params
 				middleware.push route.callbacks
-		i = 0
+		i = -1
 		next = =>
-			if middleware.length > i
+			i++
+			if middleware[i]?
 				middleware[i] req, res, @template, next
-				i++
-			else @send404 res
+			else
+				@send404 res
+				false
 		next()
 		if middleware.length is 0
 			@send404 res
 
 	postRoute: (req, res, next) =>
+		IO.log "Client requested #{req.path} with method 'post'"
+		middleware = []
 		for route in @routes.post
 			if route.match req.path
 				req.params = route.params
 				middleware.push route.callbacks
-		i = 0
+		i = -1
 		next = =>
-			if middleware.length > i
+			i++
+			if middleware[i]?
 				middleware[i] req, res, @template, next
-				i++
-			else @send404 res
+			else
+				@send404 res
+				false
 		next()
 		if middleware.length is 0
 			@send404 res
 
 	delRoute: (req, res, next) =>
+		IO.log "Client requested #{req.path} with method 'del'"
+		middleware = []
 		for route in @routes.del
 			if route.match req.path
 				req.params = route.params
 				middleware.push route.callbacks
-		i = 0
+		i = -1
 		next = =>
-			if middleware.length > i
+			i++
+			if middleware[i]?
 				middleware[i] req, res, @template, next
-				i++
-			else @send404 res
+			else
+				@send404 res
+				false
 		next()
 		if middleware.length is 0
 			@send404 res
@@ -111,6 +125,7 @@ class Router
 			path:physicalLocation
 
 	send404: (res) =>
+		IO.log "404 Request not served"
 		@template.changeContent "Sorry, I couldn't find that page!"
 		res.send 404, @template.render {title:'Error 404'}
 		@template.newContext()

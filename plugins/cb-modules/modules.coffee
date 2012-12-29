@@ -41,9 +41,23 @@ class cb_modules extends Plugin
 					@routes.push
 						address: "/#{moduleInfo.namespace}/:controller?/:action?/:view?"
 						method: 'get'
-						callback: (req, res, template) ->
-							return mvcHelper.loadModule moduleInfo, req, template, res
-							#IO.log "#{moduleInfo.namespace} Not yet Implemented"
+						callback: (req, res, template, next) ->
+							return mvcHelper.loadModule moduleInfo, req, res, template, next
+					@routes.push
+						address: "/#{moduleInfo.namespace}/:controller?/:action?/:view?"
+						method: 'put'
+						callback: (req, res, template, next) ->
+							return mvcHelper.loadModule moduleInfo, req, res, template, next
+					@routes.push
+						address: "/#{moduleInfo.namespace}/:controller?/:action?/:view?"
+						method: 'del'
+						callback: (req, res, template, next) ->
+							return mvcHelper.loadModule moduleInfo, req, res, template, next
+					@routes.push
+						address: "/#{moduleInfo.namespace}/:controller?/:action?/:view?"
+						method: 'post'
+						callback: (req, res, template, next) ->
+							return mvcHelper.loadModule moduleInfo, req, res, template, next
 					IO.log "Initialised module '#{moduleInfo.name}' with namespace '#{moduleInfo.namespace}'"
 				catch e
 					IO.error "Failed to initialise '#{moduleInfo.name}' with namespace '#{moduleInfo.namespace}'"
