@@ -6,6 +6,7 @@
 
 ControllerMVC = require '../../library/MVC.controller'
 RequestHelper = require '../../helpers/Helper.mvc.routeData'
+AuthHelper = require '../../helpers/Helper.auth'
 
 
 class cbadmin extends ControllerMVC

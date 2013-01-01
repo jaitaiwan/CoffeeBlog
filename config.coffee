@@ -17,7 +17,7 @@ module.exports =
 		db:'coffeeblog'
 		auth: false
 		password: '1amaw3s0me'
-		collections: ['users','posts','config']
+		collections: ['users','sessions','posts','config']
 
 cookie:
 	secret: 'aw3someAsBr0'

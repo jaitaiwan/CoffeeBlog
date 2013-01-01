@@ -18,6 +18,7 @@ server = require('http')
 
 # Use express's default body parser so we don't have to
 app.configure 'production', ->
+	app.use express.cookieSession()
 	app.use express.bodyParser()
 	app.use express.cookieParser config.cookie.secret
 

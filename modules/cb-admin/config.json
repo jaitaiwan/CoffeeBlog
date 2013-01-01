@@ -3,7 +3,7 @@
 	"namespace": "cbadmin",
 	"author":"Daniel J Holmes",
 	"helperDependancies":[
-		"mvc.routeData", "template"
+		"mvc.routeData", "template", "auth"
 	],
 	"template":"cbadmin"
 }
