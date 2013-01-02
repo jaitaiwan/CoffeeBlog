@@ -6,6 +6,7 @@
 
 Database = require("../coffeeblog/coffeeblog").database
 IO = require "../coffeeblog/log"
+ObjectID = require('mongojs').ObjectId
 
 class AuthHelper
 	instance = null
@@ -29,7 +30,7 @@ class AuthHelper
 			(if c is 'x' then r else (r & 0x7 | 0x8)).toString 16
 		uuid
 
-	sendUID: ->
+	sendUID: (errLoc) ->
 		uuid = @createUID()
 		Database.set null,
 			uuid: uuid
@@ -38,29 +39,50 @@ class AuthHelper
 			if err
 				IO.warn "Failed to set UUID in database"
 				IO.debug err
+				@response.redirect errLoc
 				return false
 			@response.cookie 'uuid', uuid
 		, false, "sessions"
 
 		uuid
 
-	isAuthorised: ->
+	isAuthorised: (fn)->
 		currentSession = @request.session
-		if not currentUUID = @request.cookies.uuid
-			IO.warn "Valid session but no UUID set"
-			return false;
-		Database.get {sessionID: currentSession, uuid: currentUUID}, {}, (err, data) =>
+		fn ?= (err, data) =>
 			if err
 				IO.warn "Failed to get a valid session"
 				IO.debug err
 				@response.send 401, "Application not authorised"
-				return false;
-		, "sessions"
+				return false
+		if not currentUUID = @request.cookies.uuid
+			IO.warn "Valid session but no UUID set"
+			return false
+		Database.get {sessionID: currentSession, uuid: currentUUID}, {}, fn, "sessions"
 
-	## TODO ##
 	getUser: (fn) ->
+		if typeof fn isnt "function"
+			IO.error "getUser needs a function"
+		@isAuthorised (err, data) ->
+			if err
+				IO.warn "Couldn't get a valid session"
+				IO.debug err
+				return false
+			if not data.uid
+				IO.warn "No user is logged in with this session"
+				IO.debug data
+				return false
+			Database.get {_id:ObjectID(data.uid)}, {}, fn, "users"
 
-	setUser: (username, password) ->
-
+	setUser: (username, password, fn) ->
+		Database.get {username:username,password:password}, {}, (err, data) ->
+			if err
+				IO.warn "Something went wrong"
+				fn err, data
+				return false
+			if data.length is 0
+				fn err, data
+			else
+				IO.warn "Data.length wrong"
+		, "Users"
 
 module.exports = AuthHelper
