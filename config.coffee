@@ -15,9 +15,9 @@ module.exports =
 		host: 'localhost'
 		user: 'coffeeuser'
 		db:'coffeeblog'
-		auth: false
+		auth: true
 		password: '1amaw3s0me'
 		collections: ['users','sessions','posts','config']
 
-cookie:
-	secret: 'aw3someAsBr0'
+	cookie:
+		secret: 'aw3someAsBr0'

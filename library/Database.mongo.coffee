@@ -14,7 +14,7 @@ class Database.Mongo extends Database
 	db: config.db.db
 	user: config.db.user
 	password: config.db.password
-	auth: false
+	auth: config.db.auth
 
 	get: (findObj, orderBy = {}, fn, collection) ->
 		if typeof arguments[arguments.length - 2] isnt 'function' then return false
@@ -25,7 +25,7 @@ class Database.Mongo extends Database
 		, fn
 
 	set: (findObj, setObj, fn, setAll = false, collection) ->
-		if typeof arguments[arguments.length -3] isnt 'function' then return false
+		if typeof arguments[arguments.length - 3] isnt 'function' then return false
 		if not findObj? then @handle[collection].save setObj, fn
 		else @handle[collection].update findObj, {$set:setObj}, {multi:setAll}, fn
 

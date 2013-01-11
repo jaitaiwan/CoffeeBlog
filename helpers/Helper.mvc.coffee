@@ -32,9 +32,10 @@ class MVC
 		response.set template.headers
 		response.send template.render()
 		template.newContext()
+		response.end()
 		return true
 
-	initHelpers: (dependancies, request, template, response) ->
+	initHelpers: (dependancies, request, response, template) ->
 		if dependancies? and dependancies.length > 0
 			for dependant in dependancies
 				try

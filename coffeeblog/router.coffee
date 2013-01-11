@@ -24,6 +24,7 @@ class Router
 
 	initialise: (@app, @template) ->
 		app.use route.location, express.static route.path for route in @staticRoutes
+		app.use app.router
 		app.get '*', @getRoute
 		app.put '*', @putRoute
 		app.post '*', @postRoute
@@ -101,6 +102,7 @@ class Router
 				middleware[i] req, res, @template, next
 			else
 				@send404 res
+				res.end()
 				false
 		next()
 		if middleware.length is 0

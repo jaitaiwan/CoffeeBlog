@@ -17,10 +17,10 @@ server = require('http')
 	.createServer app
 
 # Use express's default body parser so we don't have to
-app.configure 'production', ->
-	app.use express.cookieSession()
-	app.use express.bodyParser()
-	app.use express.cookieParser config.cookie.secret
+app.use express.cookieParser config.cookie.secret
+app.use express.cookieSession
+	secret: config.cookie.secret
+app.use express.bodyParser()
 
 # Initialise the application then add routes
 coffeeblog.init app

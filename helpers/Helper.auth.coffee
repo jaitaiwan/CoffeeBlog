@@ -4,16 +4,17 @@
 # @description Provides authorisation helpers for modules & plugins
 ###
 
-Database = require("../coffeeblog/coffeeblog").database
+coffeeblog = require("../coffeeblog/coffeeblog").singleton()
 IO = require "../coffeeblog/log"
+Database = coffeeblog.database
 ObjectID = require('mongojs').ObjectId
 
 class AuthHelper
 	instance = null
 
 	@initialise: (data) ->
-		@request = data.request
-		@response = data.response
+		@::request = data.request
+		@::response = data.response
 		@singleton
 
 	@singleton: ->
@@ -30,7 +31,7 @@ class AuthHelper
 			(if c is 'x' then r else (r & 0x7 | 0x8)).toString 16
 		uuid
 
-	sendUID: (errLoc) ->
+	sendUID: ->
 		uuid = @createUID()
 		Database.set null,
 			uuid: uuid
@@ -39,7 +40,6 @@ class AuthHelper
 			if err
 				IO.warn "Failed to set UUID in database"
 				IO.debug err
-				@response.redirect errLoc
 				return false
 			@response.cookie 'uuid', uuid
 		, false, "sessions"
@@ -53,9 +53,16 @@ class AuthHelper
 				IO.warn "Failed to get a valid session"
 				IO.debug err
 				@response.send 401, "Application not authorised"
+				@response.end()
 				return false
-		if not currentUUID = @request.cookies.uuid
+			if data.length > 0
+				IO.warn "No valid session"
+		if typeof fn isnt "function"
+			IO.error "isAuthorised needs a function"
+		if not currentUUID = @_getCookies().uuid
 			IO.warn "Valid session but no UUID set"
+			@response.send 500, "Application has no ID"
+			@response.end()
 			return false
 		Database.get {sessionID: currentSession, uuid: currentUUID}, {}, fn, "sessions"
 
@@ -84,5 +91,8 @@ class AuthHelper
 			else
 				IO.warn "Data.length wrong"
 		, "Users"
+
+	_getCookies: ->
+		@request.signedCookies || @request.cookies
 
 module.exports = AuthHelper

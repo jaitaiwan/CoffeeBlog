@@ -12,7 +12,13 @@ AuthHelper = require '../../helpers/Helper.auth'
 class cbadmin extends ControllerMVC
 
 	default: ->
+		ah = AuthHelper.singleton()
+		ah.sendUID()
 		@template.title = ""
 		return true
+
+	doSomething: ->
+		ah = AuthHelper.singleton()
+		ah.isAuthorised()
 
 module.exports = cbadmin
