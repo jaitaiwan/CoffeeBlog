@@ -6,10 +6,15 @@
 
 path = require 'path'
 IO = require '../coffeeblog/log'
+Q = require 'q'
 
+
+## TODO Promises
 
 class MVC
 	loadModule: (info, request, response, template, next) ->
+		promise = Q.fcall ->
+			return true
 		if info.template?
 			TemplateHelper = require './Helper.template'
 			template = TemplateHelper.loadTemplate info.template
@@ -20,22 +25,27 @@ class MVC
 		view = request.params.view || 'default'
 		Mod = new Mod view, template
 		action = if request.params.action? then request.params.action else 'default'
-		@initHelpers info.helperDependancies, request, response, template
+		@initHelpers info.helperDependancies, request, response, template, promise
 		if result = (Mod[action]?.call request.query)
 			if typeof result is 'object'
 				if result.redirect? then response.redirect result.redirect[0], result.redirect[1]
 				true
-			IO.log "Request Served"
 		else
 			next()
 			false
-		response.set template.headers
-		response.send template.render()
-		template.newContext()
-		response.end()
+		promise.fin ->
+			#console.log arguments
+			response.set template.headers
+			response.send template.render()
+			template.newContext()
+			response.end()
+			IO.log "Request Served"
+		promise.fail ->
+			IO.debug arguments
+		promise.done()
 		return true
 
-	initHelpers: (dependancies, request, response, template) ->
+	initHelpers: (dependancies, request, response, template, q) ->
 		if dependancies? and dependancies.length > 0
 			for dependant in dependancies
 				try
@@ -44,6 +54,7 @@ class MVC
 						request: request
 						response: response
 						template: template
+						promise: q
 					IO.log "Loaded dependancy Helper.#{dependant}"
 				catch e
 					IO.warn "Unable to load dependancy Helper.#{dependant}"

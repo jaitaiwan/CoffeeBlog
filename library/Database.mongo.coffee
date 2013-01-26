@@ -25,8 +25,10 @@ class Database.Mongo extends Database
 		, fn
 
 	set: (findObj, setObj, fn, setAll = false, collection) ->
+		console.log arguments
+		col = @handle.collection collection
 		if typeof arguments[arguments.length - 3] isnt 'function' then return false
-		if not findObj? then @handle[collection].save setObj, fn
-		else @handle[collection].update findObj, {$set:setObj}, {multi:setAll}, fn
+		if not findObj? then col.save setObj, fn
+		else col.update findObj, {$set:setObj}, {multi:setAll}, fn
 
 module.exports = Database.Mongo

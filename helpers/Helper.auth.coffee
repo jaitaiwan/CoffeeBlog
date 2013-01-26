@@ -8,6 +8,7 @@ coffeeblog = require("../coffeeblog/coffeeblog").singleton()
 IO = require "../coffeeblog/log"
 Database = coffeeblog.database
 ObjectID = require('mongojs').ObjectId
+Q = require 'q'
 
 class AuthHelper
 	instance = null
@@ -15,6 +16,7 @@ class AuthHelper
 	@initialise: (data) ->
 		@::request = data.request
 		@::response = data.response
+		@::promise = data.promise
 		@singleton
 
 	@singleton: ->
@@ -33,18 +35,21 @@ class AuthHelper
 
 	sendUID: ->
 		uuid = @createUID()
+	
+		deffered = Q.defer()
 		Database.set null,
 			uuid: uuid
-			sessionID: @request.session
-		, (err) =>
+			sessionID: @request.sessionID
+		, (err, data) =>
 			if err
 				IO.warn "Failed to set UUID in database"
 				IO.debug err
+				deffered.reject err
 				return false
 			@response.cookie 'uuid', uuid
+			deffered.resolve uuid
 		, false, "sessions"
-
-		uuid
+		@promise.when deffered.promise, ->
 
 	isAuthorised: (fn)->
 		currentSession = @request.session
@@ -90,7 +95,7 @@ class AuthHelper
 				fn err, data
 			else
 				IO.warn "Data.length wrong"
-		, "Users"
+		, "users"
 
 	_getCookies: ->
 		@request.signedCookies || @request.cookies
