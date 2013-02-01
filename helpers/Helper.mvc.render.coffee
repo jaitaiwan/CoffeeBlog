@@ -37,7 +37,6 @@ class RenderMVCHelper
 		@body.push fn
 
 	done: ->
-		console.log @headers, @body
 		Q.fcall(@headers).fin => Q.when true, @_resolve
 
 	_resolve: =>
