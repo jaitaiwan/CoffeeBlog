@@ -1,9 +1,0 @@
-{
-	"name":"cb-admin",
-	"namespace": "cbadmin",
-	"author":"Daniel J Holmes",
-	"helperDependancies":[
-		"mvc.routeData", "template", "auth"
-	],
-	"template":"cbadmin"
-}

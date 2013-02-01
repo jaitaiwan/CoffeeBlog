@@ -1,6 +1,0 @@
-{
-	"name":"cb-admin",
-	"author":"Daniel J Holmes",
-	"description":"The default administration plugin",
-	"entrypoint":"admin"
-}
