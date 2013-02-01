@@ -7,14 +7,13 @@
 path = require 'path'
 IO = require '../coffeeblog/log'
 Q = require 'q'
+RenderMVC = require('./Helper.mvc.render').singleton()
 
 
 ## TODO Promises
 
 class MVC
 	loadModule: (info, request, response, template, next) ->
-		promise = Q.fcall ->
-			return true
 		if info.template?
 			TemplateHelper = require './Helper.template'
 			template = TemplateHelper.loadTemplate info.template
@@ -25,24 +24,32 @@ class MVC
 		view = request.params.view || 'default'
 		Mod = new Mod view, template
 		action = if request.params.action? then request.params.action else 'default'
-		@initHelpers info.helperDependancies, request, response, template, promise
+		@initHelpers info.helperDependancies, request, response, template
 		if result = (Mod[action]?.call request.query)
 			if typeof result is 'object'
 				if result.redirect? then response.redirect result.redirect[0], result.redirect[1]
 				true
+			###
+			if Q.isPromise result
+				promise.then =>
+					result
+			###
 		else
 			next()
 			false
-		promise.fin ->
-			#console.log arguments
+		###
+		if Q.isPromise result
+			promise = result
+		promise ?= Q.fcall ->
+			return true
+		###
+		RenderMVC.thenBody =>
 			response.set template.headers
 			response.send template.render()
 			template.newContext()
 			response.end()
 			IO.log "Request Served"
-		promise.fail ->
-			IO.debug arguments
-		promise.done()
+		RenderMVC.done()
 		return true
 
 	initHelpers: (dependancies, request, response, template, q) ->
@@ -54,7 +61,6 @@ class MVC
 						request: request
 						response: response
 						template: template
-						promise: q
 					IO.log "Loaded dependancy Helper.#{dependant}"
 				catch e
 					IO.warn "Unable to load dependancy Helper.#{dependant}"

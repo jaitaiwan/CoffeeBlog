@@ -8,6 +8,7 @@ coffeeblog = require("../coffeeblog/coffeeblog").singleton()
 IO = require "../coffeeblog/log"
 Database = coffeeblog.database
 ObjectID = require('mongojs').ObjectId
+RenderMVC = require('./Helper.mvc.render').singleton()
 Q = require 'q'
 
 class AuthHelper
@@ -16,7 +17,6 @@ class AuthHelper
 	@initialise: (data) ->
 		@::request = data.request
 		@::response = data.response
-		@::promise = data.promise
 		@singleton
 
 	@singleton: ->
@@ -49,7 +49,8 @@ class AuthHelper
 			@response.cookie 'uuid', uuid
 			deffered.resolve uuid
 		, false, "sessions"
-		@promise.when deffered.promise, ->
+		RenderMVC.thenHeader deffered.promise
+
 
 	isAuthorised: (fn)->
 		currentSession = @request.session
