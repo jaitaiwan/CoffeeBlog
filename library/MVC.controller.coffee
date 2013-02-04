@@ -13,7 +13,8 @@ class controllerMVC
 			try
 				template.changeContent require "../#{path.relative './', path.dirname module.parent.id}/views/#{view}"
 			catch e
-				IO.log
+				IO.log "Couldn't load template: #{view}"
+				IO.debug e
 
 	default: =>
 		@template.context.title = "Not Yet Implemented"
