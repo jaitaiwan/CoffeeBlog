@@ -1,15 +1,15 @@
 [submodule "modules/cb-admin"]
 	path = modules/cb-admin
-	url = git://github.com/jaitaiwan/module-cb-admin.git
+	url = http://github.com/jaitaiwan/module-cb-admin.git
 [submodule "plugins/cb-modules"]
 	path = plugins/cb-modules
-	url = git://github.com/jaitaiwan/plugin-cb-modules.git
+	url = http://github.com/jaitaiwan/plugin-cb-modules.git
 [submodule "plugins/cb-debug"]
 	path = plugins/cb-debug
-	url = git://github.com/jaitaiwan/plugin-cb-debug.git
+	url = http://github.com/jaitaiwan/plugin-cb-debug.git
 [submodule "plugins/cb-pages"]
 	path = plugins/cb-pages
-	url = git://github.com/jaitaiwan/plugin-cb-pages.git
+	url = http://github.com/jaitaiwan/plugin-cb-pages.git
 [submodule "plugins/cb-posts"]
 	path = plugins/cb-posts
-	url = git://github.com/jaitaiwan/plugin-cb-posts.git
+	url = http://github.com/jaitaiwan/plugin-cb-posts.git
