@@ -13,11 +13,12 @@ module.exports =
 	db:
 		engine: 'Mongo'
 		host: 'localhost'
-		user: 'coffeeuser'
+		username: 'coffeeuser'
 		db:'coffeeblog'
 		auth: true
 		password: '1amaw3s0me'
 		collections: ['users','sessions','posts','config']
+		collection: 'expressSession' #used for expresses session storage
 
 	cookie:
 		secret: 'aw3someAsBr0'

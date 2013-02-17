@@ -8,6 +8,7 @@ path = require 'path'
 IO = require '../coffeeblog/log'
 Q = require 'q'
 RenderMVC = require('./Helper.mvc.render').singleton()
+benchmark = require('./Helper.benchmark').singleton()
 
 
 ## TODO Promises
@@ -46,14 +47,15 @@ class MVC
 		###
 		RenderMVC.thenBody =>
 			response.set template.headers
-			response.send template.render()
-			template.newContext()
+			response.status 200
+			response.write template.render()
 			response.end()
+			template.newContext()
 			IO.log "Request Served"
 		RenderMVC.done()
 		return true
 
-	initHelpers: (dependancies, request, response, template, q) ->
+	initHelpers: (dependancies, request, response, template) ->
 		if dependancies? and dependancies.length > 0
 			for dependant in dependancies
 				try

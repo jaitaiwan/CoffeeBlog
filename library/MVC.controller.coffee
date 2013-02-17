@@ -13,6 +13,7 @@ class controllerMVC
 			try
 				template.changeContent require "../#{path.relative './', path.dirname module.parent.id}/views/#{view}"
 			catch e
+				template.changeContent require "../#{path.relative './', path.dirname module.parent.id}/views/error/404"
 				IO.log "Couldn't load template: #{view}"
 				IO.debug e
 

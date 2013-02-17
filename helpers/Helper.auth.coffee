@@ -33,9 +33,8 @@ class AuthHelper
 			(if c is 'x' then r else (r & 0x7 | 0x8)).toString 16
 		uuid
 
-	sendUID: ->
+	authoriseApp: ->
 		uuid = @createUID()
-	
 		deffered = Q.defer()
 		Database.set null,
 			uuid: uuid
@@ -47,30 +46,48 @@ class AuthHelper
 				deffered.reject err
 				return false
 			@response.cookie 'uuid', uuid
-			deffered.resolve uuid
+			deffered.resolve data
 		, false, "sessions"
 		RenderMVC.thenHeader deffered.promise
 
 
-	isAuthorised: (fn)->
-		currentSession = @request.session
+	isAuthorised: (fn, fnNoUUID)->
+		currentSession = @request.sessionID
+		deffered = Q.defer()
+		fnNoUUID ?= ->
+			IO.warn "Valid session but no UUID set"
+			@response.send 500, "Application has no ID"
+			deffered.reject false
 		fn ?= (err, data) =>
 			if err
 				IO.warn "Failed to get a valid session"
 				IO.debug err
 				@response.send 401, "Application not authorised"
-				@response.end()
+				deffered.reject err
 				return false
 			if data.length > 0
 				IO.warn "No valid session"
+			deffered.resolve data
 		if typeof fn isnt "function"
 			IO.error "isAuthorised needs a function"
-		if not currentUUID = @_getCookies().uuid
-			IO.warn "Valid session but no UUID set"
-			@response.send 500, "Application has no ID"
-			@response.end()
-			return false
-		Database.get {sessionID: currentSession, uuid: currentUUID}, {}, fn, "sessions"
+		if typeof fnNoUUID isnt "function"
+			IO.error "isAuthorised needs a function for no UUID"
+		else
+			if not currentUUID = @_getCookies().uuid
+				fnNoUUID(deffered)
+			else
+				Database.get {sessionID: currentSession, uuid: currentUUID}, {}, fn, "sessions"
+		return deffered.promise
+
+	authoriseIfNotAlready: =>
+		fn = (deffered) ->
+			deffered.reject false
+		@isAuthorised(null,fn).fin((data) ->
+			IO.log "Application is authorised"
+		).fail (err) =>
+			IO.log "Application is not authorised... Authorising"
+			console.log @authoriseApp()
+			@authoriseApp()
 
 	getUser: (fn) ->
 		if typeof fn isnt "function"
@@ -99,6 +116,7 @@ class AuthHelper
 		, "users"
 
 	_getCookies: ->
+		console.log @request.cookies
 		@request.signedCookies || @request.cookies
 
 module.exports = AuthHelper

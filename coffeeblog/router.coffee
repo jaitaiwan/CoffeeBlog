@@ -8,6 +8,7 @@ Route = require 'express/lib/router/route'
 IO = require './log'
 Context = require '../library/Template.context'
 express = require 'express'
+benchmark = require('../helpers/Helper.benchmark').singleton()
 class Router
 	routes:
 		get:[]
@@ -24,17 +25,18 @@ class Router
 
 	initialise: (@app, @template) ->
 		app.use route.location, express.static route.path for route in @staticRoutes
-		app.use app.router
 		app.get '*', @getRoute
 		app.put '*', @putRoute
 		app.post '*', @postRoute
 		app.delete '*', @delRoute
+		app.use app.router
 
 	getRoute: (req, res) =>
 		IO.log "Client requested #{req.path} with method 'get'"
 		middleware = []
 		for route in @routes.get
 			if route.match req.path
+				console.log route.path
 				req.params = route.params
 				middleware.push route.callbacks
 		i = -1
@@ -42,12 +44,17 @@ class Router
 			i++
 			if middleware[i]?
 				middleware[i] req, res, @template, next
-			else
+			else if middleware.length isnt 0
+				console.log "Middleware beta"
 				@send404 res
 				false
+			else
+				console.log middleware.length, middleware[i]
 		next()
 		if middleware.length is 0
+			console.log "Middleware alpha"
 			@send404 res
+
 
 
 	putRoute: (req, res, next) =>
@@ -102,7 +109,6 @@ class Router
 				middleware[i] req, res, @template, next
 			else
 				@send404 res
-				res.end()
 				false
 		next()
 		if middleware.length is 0
@@ -128,8 +134,12 @@ class Router
 
 	send404: (res) =>
 		IO.log "404 Request not served"
+		res.set @template.headers
 		@template.changeContent "Sorry, I couldn't find that page!"
-		res.send 404, @template.render {title:'Error 404'}
+		data = @template.render {title:'Error 404'}
+
+		res.status(404).write(data)
+		res.end()  ## <- Somethin's going on here!
 		@template.newContext()
 
 module.exports = Router

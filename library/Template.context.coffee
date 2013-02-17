@@ -10,6 +10,7 @@ class Context
 	title: config.siteTitle
 	headers:
 		'Content-type':'text/html'
+		'X-Powered-By': 'CoffeeBlog 0.0.1a'
 
 	header: ""
 	footer: ""

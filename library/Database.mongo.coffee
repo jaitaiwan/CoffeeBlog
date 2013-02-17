@@ -12,7 +12,7 @@ class Database.Mongo extends Database
 	engine: MongoDB
 	host: config.db.host
 	db: config.db.db
-	user: config.db.user
+	user: config.db.username
 	password: config.db.password
 	auth: config.db.auth
 
@@ -29,5 +29,9 @@ class Database.Mongo extends Database
 		if typeof arguments[arguments.length - 3] isnt 'function' then return false
 		if not findObj? then col.save setObj, fn
 		else col.update findObj, {$set:setObj}, {multi:setAll}, fn
+
+	ensureIndex: (index, collection) ->
+		col = @handle.collection collection
+		col.ensureIndex index
 
 module.exports = Database.Mongo
